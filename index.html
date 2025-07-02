@@ -1,7 +1,18 @@
-<div class="ad11-scope">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Website Viewer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
+    body {
+      margin: 0;
+      background: #f7f7f7;
+      font-family: 'Raleway', sans-serif;
+    }
+
     footer {
       display: none !important;
     }
@@ -146,6 +157,8 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
   </style>
+</head>
+<body>
 
   <div class="viewer2__container">
     <div class="viewer2__title">Website Viewer</div>
@@ -182,13 +195,13 @@
 
       const baseHeight = 720;
       const widthPercent = (1 / scale) * 100;
-      const wrapperHeight = baseHeight / scale; // compensat height
+      const wrapperHeight = baseHeight / scale;
 
       wrapper.style.transform = `scale(${scale})`;
       wrapper.style.width = `${widthPercent}%`;
       wrapper.style.height = `${wrapperHeight}px`;
 
-      iframe.style.height = `${baseHeight}px`; // iframe fix height
+      iframe.style.height = `${baseHeight}px`;
 
       zoomLabel.textContent = `Zoom: ${Math.round(scale * 100)}%`;
     }
@@ -241,7 +254,6 @@
 
     document.getElementById("videoLinkInputAlt").addEventListener("input", toggleClearButton);
 
-    // Scroll Lock Toggle
     let isScrollLocked = false;
 
     function toggleScroll() {
@@ -259,4 +271,6 @@
       }
     }
   </script>
-</div>
+
+</body>
+</html>
