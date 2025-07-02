@@ -1,0 +1,262 @@
+<div class="ad11-scope">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    footer {
+      display: none !important;
+    }
+
+    .viewer2__container {
+      width: 95%;
+      max-width: 1300px;
+      margin: 30px auto;
+      padding: 20px;
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      font-family: 'Raleway', sans-serif;
+      position: relative;
+      z-index: 10;
+    }
+
+    .viewer2__title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(to right, #17202a, #25383C);
+      padding: 12px 0;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .viewer2__form {
+      display: flex;
+      align-items: stretch;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-wrap: nowrap;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .viewer2__clear-button {
+      padding: 0 15px;
+      background-color: #f0f0f0;
+      color: #555;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .viewer2__clear-button:hover {
+      background-color: #e0e0e0;
+    }
+
+    .viewer2__input {
+      flex: 1;
+      border: none;
+      padding: 12px;
+      font-size: 15px;
+      outline: none;
+      min-width: 0;
+    }
+
+    .viewer2__button {
+      background: linear-gradient(to right, #17202a, #25383C);
+      color: white;
+      border: none;
+      padding: 0 16px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+      white-space: nowrap;
+      overflow: hidden;
+      min-width: 60px;
+      max-width: 100px;
+      flex-shrink: 0;
+    }
+
+    .viewer2__button:hover {
+      opacity: 0.9;
+    }
+
+    .zoom-buttons {
+      position: relative;
+      padding: 6px 0;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .zoom-buttons button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: none;
+      background-color: #7f00ff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #zoomLevel {
+      font-weight: bold;
+      font-size: 12px;
+      color: #333;
+      align-self: center;
+    }
+
+    #scrollLockBtn {
+      background-color: #FF66FF !important;
+    }
+
+    .iframe-container {
+      margin: 40px auto;
+      max-width: 1300px;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .scale-wrapper {
+      overflow: hidden;
+      transform-origin: top left;
+      width: 100%;
+      height: auto;
+    }
+
+    .scale-wrapper iframe {
+      width: 100%;
+      height: 720px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+  </style>
+
+  <div class="viewer2__container">
+    <div class="viewer2__title">Website Viewer</div>
+    <div class="viewer2__form">
+      <button class="viewer2__clear-button" id="clearButtonAlt" onclick="clearInputAlt()" title="Clear input" style="display: none;">
+        <i class="fas fa-times"></i>
+      </button>
+      <input class="viewer2__input" id="videoLinkInputAlt" type="text" placeholder="http:// or https://" />
+      <button class="viewer2__button" onclick="updateIframeAlt()">Generate</button>
+    </div>
+  </div>
+
+  <div class="iframe-container" id="iframeContainerAlt" style="display:none;">
+    <div class="zoom-buttons">
+      <button onclick="zoomOut()">− Zoom</button>
+      <button onclick="zoomIn()">+ Zoom</button>
+      <span id="zoomLevel">Zoom: 100%</span>
+      <button onclick="toggleScroll()" id="scrollLockBtn">🔒 Lock Scroll</button>
+    </div>
+    <div id="scaleWrapper" class="scale-wrapper" style="transform: scale(1); width: 100%;">
+      <iframe id="videoIframeAlt" sandbox="allow-forms allow-top-navigation allow-downloads allow-same-origin allow-scripts" allowfullscreen scrolling="yes"></iframe>
+    </div>
+  </div>
+
+  <script>
+    const zoomLevels = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3];
+    let zoomIndex = 0;
+
+    function applyZoom() {
+      const scale = zoomLevels[zoomIndex];
+      const wrapper = document.getElementById("scaleWrapper");
+      const zoomLabel = document.getElementById("zoomLevel");
+      const iframe = document.getElementById("videoIframeAlt");
+
+      const baseHeight = 720;
+      const widthPercent = (1 / scale) * 100;
+      const wrapperHeight = baseHeight / scale; // compensat height
+
+      wrapper.style.transform = `scale(${scale})`;
+      wrapper.style.width = `${widthPercent}%`;
+      wrapper.style.height = `${wrapperHeight}px`;
+
+      iframe.style.height = `${baseHeight}px`; // iframe fix height
+
+      zoomLabel.textContent = `Zoom: ${Math.round(scale * 100)}%`;
+    }
+
+    function zoomIn() {
+      if (zoomIndex > 0) {
+        zoomIndex--;
+        applyZoom();
+      }
+    }
+
+    function zoomOut() {
+      if (zoomIndex < zoomLevels.length - 1) {
+        zoomIndex++;
+        applyZoom();
+      }
+    }
+
+    function updateIframeAlt() {
+      const userInput = document.getElementById("videoLinkInputAlt").value.trim();
+      const iframeContainer = document.getElementById("iframeContainerAlt");
+      const iframe = document.getElementById("videoIframeAlt");
+
+      if (userInput !== "") {
+        iframe.src = userInput;
+        iframeContainer.style.display = "block";
+        zoomIndex = 0;
+        applyZoom();
+      } else {
+        console.log("Input is empty. Please enter a URL.");
+      }
+    }
+
+    function clearInputAlt() {
+      const input = document.getElementById("videoLinkInputAlt");
+      const iframe = document.getElementById("videoIframeAlt");
+      const iframeContainer = document.getElementById("iframeContainerAlt");
+
+      input.value = "";
+      iframe.src = "";
+      iframeContainer.style.display = "none";
+      toggleClearButton();
+    }
+
+    function toggleClearButton() {
+      const input = document.getElementById("videoLinkInputAlt");
+      const clearButton = document.getElementById("clearButtonAlt");
+      clearButton.style.display = input.value.trim() !== "" ? "flex" : "none";
+    }
+
+    document.getElementById("videoLinkInputAlt").addEventListener("input", toggleClearButton);
+
+    // Scroll Lock Toggle
+    let isScrollLocked = false;
+
+    function toggleScroll() {
+      const body = document.body;
+      const btn = document.getElementById("scrollLockBtn");
+
+      isScrollLocked = !isScrollLocked;
+
+      if (isScrollLocked) {
+        body.style.overflow = "hidden";
+        btn.textContent = "🔓 Unlock Scroll";
+      } else {
+        body.style.overflow = "auto";
+        btn.textContent = "🔒 Lock Scroll";
+      }
+    }
+  </script>
+</div>
