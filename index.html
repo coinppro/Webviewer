@@ -1,32 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Website Viewer</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
   <style>
     body {
       margin: 0;
-      background: #f7f7f7;
-      font-family: 'Raleway', sans-serif;
+      padding: 20px;
+      font-family: 'Segoe UI', 'Raleway', sans-serif;
+      background-color: #f0f2f5;
     }
 
     footer {
       display: none !important;
     }
 
+    h2 {
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    .support-links__container {
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto 40px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .support-links__header,
+    .support-links__item {
+      display: grid;
+      grid-template-columns: 40px 140px 1fr 80px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .support-links__header {
+      font-weight: bold;
+      background-color: #f8f8f8;
+    }
+
+    .support-links__item:last-child {
+      border-bottom: none;
+    }
+
+    .favicon {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    .link-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 14px;
+      color: #0073e6;
+    }
+
+    .domain-text {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .copy-btn {
+      background: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #005bb5;
+    }
+
+    @media (max-width: 600px) {
+      .support-links__header,
+      .support-links__item {
+        grid-template-columns: 30px 100px 1fr 60px;
+        font-size: 13px;
+      }
+    }
+
     .viewer2__container {
       width: 95%;
       max-width: 1300px;
-      margin: 30px auto;
+      margin: 0 auto 30px auto;
       padding: 20px;
       border-radius: 10px;
       background: #ffffff;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       text-align: center;
-      font-family: 'Raleway', sans-serif;
       position: relative;
       z-index: 10;
     }
@@ -47,10 +125,10 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       overflow: hidden;
-      flex-wrap: nowrap;
       max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
+      flex-wrap: nowrap;
     }
 
     .viewer2__clear-button {
@@ -103,11 +181,8 @@
     }
 
     .zoom-buttons {
-      position: relative;
       padding: 6px 0;
       display: flex;
-      flex-wrap: nowrap;
-      justify-content: flex-start;
       gap: 6px;
       z-index: 10;
     }
@@ -160,6 +235,18 @@
 </head>
 <body>
 
+  <!-- Support Links Section -->
+  <h2>Support Links</h2>
+  <div class="support-links__container" id="linkContainer">
+    <div class="support-links__header">
+      <div>Logo</div>
+      <div>Site</div>
+      <div>Link</div>
+      <div>Action</div>
+    </div>
+  </div>
+
+  <!-- Website Viewer Section -->
   <div class="viewer2__container">
     <div class="viewer2__title">Website Viewer</div>
     <div class="viewer2__form">
@@ -184,6 +271,7 @@
   </div>
 
   <script>
+    // Viewer functions
     const zoomLevels = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3];
     let zoomIndex = 0;
 
@@ -202,7 +290,6 @@
       wrapper.style.height = `${wrapperHeight}px`;
 
       iframe.style.height = `${baseHeight}px`;
-
       zoomLabel.textContent = `Zoom: ${Math.round(scale * 100)}%`;
     }
 
@@ -270,7 +357,41 @@
         btn.textContent = "🔒 Lock Scroll";
       }
     }
-  </script>
 
+    // Support Links Script
+    const links = [
+      "https://tiktokoa.com/#038;utm_medium=superpwa",
+      "https://example.com/page?ref=12345",
+      "https://tiktokoa.com/#038;utm_medium=superpwa&#038;utm_campaign=superpwa/",
+      "https://tiktokoa.com/#038;utm_medium=superpwa&#038;utm_campaign=superpwa/",
+      "https://tiktokoa.com/#038;utm_medium=superpwa&#038;utm_campaign=superpwa/"
+    ];
+
+    const container = document.getElementById("linkContainer");
+
+    links.forEach(link => {
+      const domain = new URL(link).hostname;
+
+      const item = document.createElement("div");
+      item.className = "support-links__item";
+
+      item.innerHTML = `
+        <img class="favicon" src="https://www.google.com/s2/favicons?sz=32&domain=${domain}" />
+        <div class="domain-text">${domain}</div>
+        <div class="link-text" title="${link}">${link}</div>
+        <button class="copy-btn" onclick="copyLink('${link}')">Copy</button>
+      `;
+
+      container.appendChild(item);
+    });
+
+    function copyLink(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied: ' + text);
+      }).catch(() => {
+        alert('Copy failed!');
+      });
+    }
+  </script>
 </body>
 </html>
